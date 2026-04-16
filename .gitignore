@@ -1,0 +1,12 @@
+# Ignore large datasets and model files
+data/
+models/
+juliet*.csv
+
+# MacOS
+.DS_Store
+
+# Python & Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
