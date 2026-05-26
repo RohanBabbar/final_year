@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CWE Model Visualizations</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .plot-container { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h1>CWE Model Evaluation Visualizations</h1>
+    <div class="grid">
+        <div id="loss-plot" class="plot-container"></div>
+        <div id="compare-plot" class="plot-container"></div>
+        <div id="pr-plot" class="plot-container"></div>
+        <div id="cm-plot" class="plot-container"></div>
+    </div>
+
+    <script>
+        // 1. Loss Plot
+        var lossData = [
+            { x: [1, 2], y: [0.2138, 0.0071], name: 'Train Loss', type: 'scatter', line: {color: '#3498db', width: 3} },
+            { x: [1, 2], y: [0.0056, 0.0073], name: 'Val Loss', type: 'scatter', line: {color: '#e74c3c', width: 3} }
+        ];
+        Plotly.newPlot('loss-plot', lossData, {title: 'Training vs Validation Loss', xaxis: {title: 'Epoch', tickvals: [1, 2]}, yaxis: {title: 'Cross-Entropy Loss'}});
+
+        // 2. Model Comparison
+        var compareData = [
+            { x: ['CodeT5-small', 'CodeBERT'], y: [0.9984, 0.9978], name: 'Accuracy', type: 'bar', marker: {color: '#2ecc71'} },
+            { x: ['CodeT5-small', 'CodeBERT'], y: [0.9985, 0.9983], name: 'Macro F1', type: 'bar', marker: {color: '#9b59b6'} }
+        ];
+        Plotly.newPlot('compare-plot', compareData, {title: 'Model Comparison', barmode: 'group', yaxis: {title: 'Score', range: [0.99, 1.0]}});
+
+        // 3. PR Curve
+        var precisions = [0.9955,0.9997,0.9876,0.8421,0.9927,1,0.9943,0.8962,0,1,1,0.9998,1,0.942,0.9681,0,0.9975,1,0.7347,0.8506,0.9393,0,0,0.9474,0.7174,0.9676,1,0.8836,1,0,0,0.966,1,0,1,1,0,0.965,0.525,0,0.6667,1,1,1,0,1,1,0.9735,0.9379,1,0.4885,0.9962,0.9693,0,0.873,1,0.7145,1,0.9872,0,1,0,0,0.9805,0,0,0,1,1,0,1,1,0,1,1,1,0,0.5,1,0.4545,0.7143,0.8877,0,0.4815,0.6774,1,1,0.9928,1,0.9715,0.1978,1,0,0,0,0,0.3642,1,1,0,0.9853,1,0.2553,0.55,1,0.8502,0.9977,0.9965,0.3618,1,0.9936,0.5538,1,0.9933,0.8182,0.8,1,0.9981];
+        var recalls = [0.991,0.9993,0.9994,0.9697,0.9982,0.9994,0.9991,0.9954,0,1,0.7692,0.9983,0.9984,0.9887,0.9873,0,0.9916,0.25,0.9,1,1,0,0,0.9,1,1,0.987,0.5567,0.9726,0,0,0.987,0.0167,0,0.0789,0.0357,0,1,1,0,0.0513,0.9956,0.7312,0.9867,0,1,1,1,0.9879,1,1,1,0.7921,0,0.967,1,1,1,1,0,0.8182,0,0,0.9989,0,0,0,0.8571,1,0,0.7143,1,0,0.0893,0.0133,0.8095,0,0.0526,0.28,1,1,0.9946,0,1,1,0.7407,1,0.9133,0.8571,0.8047,0.9,0.9882,0,0,0,0,0.9167,1,1,0,0.9911,0.4211,0.5714,0.5238,1,1,0.9944,1,0.9091,0.0132,1,0.9,1,0.9867,0.8571,1,1,0.9981];
+        var labels = ["CWE114","CWE121","CWE122","CWE123","CWE124","CWE126","CWE127","CWE134","CWE15","CWE176","CWE188","CWE190","CWE191","CWE194","CWE195","CWE196","CWE197","CWE222","CWE223","CWE226","CWE23","CWE242","CWE244","CWE247","CWE252","CWE253","CWE256","CWE259","CWE272","CWE273","CWE284","CWE319","CWE321","CWE325","CWE327","CWE328","CWE338","CWE36","CWE364","CWE366","CWE367","CWE369","CWE377","CWE390","CWE391","CWE396","CWE397","CWE398","CWE400","CWE401","CWE404","CWE415","CWE416","CWE426","CWE427","CWE440","CWE457","CWE459","CWE464","CWE467","CWE468","CWE469","CWE475","CWE476","CWE478","CWE479","CWE480","CWE481","CWE482","CWE483","CWE484","CWE500","CWE506","CWE510","CWE511","CWE526","CWE534","CWE535","CWE546","CWE561","CWE562","CWE563","CWE570","CWE571","CWE587","CWE588","CWE590","CWE591","CWE605","CWE606","CWE615","CWE617","CWE620","CWE665","CWE666","CWE667","CWE672","CWE674","CWE675","CWE676","CWE680","CWE681","CWE685","CWE688","CWE690","CWE758","CWE761","CWE762","CWE773","CWE775","CWE78","CWE780","CWE785","CWE789","CWE832","CWE835","CWE843","CWE90"];
+        
+        var prPlotData = [{
+            x: recalls,
+            y: precisions,
+            text: labels,
+            mode: 'markers',
+            type: 'scatter',
+            marker: { size: 10, color: precisions, colorscale: 'Viridis', showscale: true }
+        }];
+        Plotly.newPlot('pr-plot', prPlotData, {title: 'Precision vs Recall (Class-wise)', xaxis: {title: 'Recall'}, yaxis: {title: 'Precision'}, hovermode: 'closest'});
+
+        // 4. Confusion Matrix
+        var cmZ = [[440,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,2772,0,6,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],[0,0,3606,6,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],[0,0,0,1596,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,948,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],[0,0,0,0,0,1596,0,0,2,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,1368,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,3100,2,0,0,2,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,1734,0,0,2,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,2,730,0,8,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,2,0,728,10,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,296,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1254,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,36,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,180,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,216,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,72,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,152,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,72]];
+        var cmLabels = ["CWE114","CWE121","CWE122","CWE124","CWE126","CWE127","CWE134","CWE190","CWE191","CWE194","CWE195","CWE197","CWE23","CWE244","CWE252","CWE253","CWE272","CWE284","CWE319","CWE325"];
+        
+        var cmPlotData = [{
+            z: cmZ,
+            x: cmLabels,
+            y: cmLabels,
+            type: 'heatmap',
+            colorscale: 'Blues'
+        }];
+        Plotly.newPlot('cm-plot', cmPlotData, {title: 'Confusion Matrix (Top 20 Subset)', yaxis: {autorange: 'reversed'}});
+    </script>
+</body>
+</html>

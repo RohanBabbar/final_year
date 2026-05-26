@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Efficiency vs Accuracy</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 800px;
+            height: 500px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chart-container">
+    <h2 class="title">Efficiency vs Accuracy: CodeBERT vs CodeT5</h2>
+    <canvas id="bubbleChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('bubbleChart').getContext('2d');
+
+    // Chart.js Bubble Chart configuration
+    // X-axis: Parameters (Millions)
+    // Y-axis: Accuracy (%)
+    // Bubble Size (R): Represents Training Time or just constant for visibility
+    const data = {
+        datasets: [{
+            label: 'CodeBERT (Baseline)',
+            data: [{
+                x: 125, // Parameters in Millions
+                y: 99.78, // Accuracy
+                r: 30 // Size
+            }],
+            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2
+        }, {
+            label: 'CodeT5-small (Proposed)',
+            data: [{
+                x: 60, // Parameters in Millions
+                y: 99.84, // Accuracy
+                r: 30 // Size
+            }],
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2
+        }]
+    };
+
+    const config = {
+        type: 'bubble',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw.x}M Params | ${context.raw.y}% Accuracy`;
+                        }
+                    },
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 14 },
+                    padding: 12
+                },
+                legend: {
+                    labels: {
+                        font: {
+                            size: 14,
+                            family: 'Inter'
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Model Size (Millions of Parameters) ➔ Lower is Better',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    min: 40,
+                    max: 150,
+                    grid: { color: '#e9ecef' }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Accuracy (%) ➔ Higher is Better',
+                        font: { size: 16, weight: 'bold' }
+                    },
+                    min: 99.75,
+                    max: 99.90,
+                    grid: { color: '#e9ecef' }
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+</script>
+
+</body>
+</html>

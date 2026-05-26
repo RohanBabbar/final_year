@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Results: Software Vulnerability Classification</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px; color: #333; line-height: 1.6; }
+        h1, h2, h3 { color: #2c3e50; }
+        h1 { border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; color: #2980b9; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; font-size: 13px; border-left: 4px solid #3498db; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; color: #333; }
+        .highlight { font-weight: bold; color: #e74c3c; }
+        .success { color: #27ae60; font-weight: bold; }
+        .metric-box { border: 1px solid #ddd; border-radius: 5px; padding: 15px; background-color: #f9f9f9; text-align: center; display: inline-block; width: 30%; margin-right: 2%; box-sizing: border-box; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #2980b9; }
+        .metric-label { font-size: 14px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+        .container { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Project Report: Software Vulnerability Classification (CWE)</h1>
+    <p><strong>Objective:</strong> To develop a highly efficient, state-of-the-art machine learning pipeline for detecting and classifying Common Weakness Enumeration (CWE) vulnerabilities in source code using lightweight, Transformer-based linguistic models.</p>
+
+    <h2>1. Sample Code Snippets</h2>
+
+    <h3>Preprocessing Code</h3>
+<pre><code>import re
+
+def clean_code(code):
+    if not isinstance(code, str): return ""
+    
+    # Remove single-line and multi-line comments
+    code = re.sub(r"//.*", "", code)
+    code = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
+    
+    # Normalize whitespace
+    code = re.sub(r"\s+", " ", code)
+    return code.strip()
+</code></pre>
+
+    <h3>Tokenizer Usage</h3>
+<pre><code>from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("Salesforce/codet5-small")
+
+def tokenize_batch(batch):
+    return tokenizer(
+        batch["code_clean"].tolist(),
+        padding="max_length",
+        truncation=True,
+        max_length=256,
+        return_tensors="pt"
+    )
+</code></pre>
+
+    <h3>Model Training Snippet</h3>
+<pre><code>def train_one_epoch(model, dataloader, optimizer, device):
+    model.train()
+    # Using Class-Weighted Cross Entropy to handle dataset imbalance
+    loss_fn = nn.CrossEntropyLoss(weight=class_weights)
+    
+    for batch in dataloader:
+        outputs = model(
+            input_ids=batch["input_ids"].to(device), 
+            attention_mask=batch["attention_mask"].to(device)
+        )
+        loss = loss_fn(outputs.logits, batch["labels"].to(device))
+        
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+</code></pre>
+
+    <h2>2. Model Configuration</h2>
+    <ul>
+        <li><strong>Model Architecture:</strong> CodeT5-small</li>
+        <li><strong>Learning Rate:</strong> 5e-5</li>
+        <li><strong>Batch Size:</strong> 4</li>
+        <li><strong>Epochs:</strong> 2</li>
+        <li><strong>Optimizer:</strong> AdamW</li>
+        <li><strong>Loss Function:</strong> Weighted Cross-Entropy Loss</li>
+    </ul>
+
+    <h2>3. Sample Dataset Entry</h2>
+    <p>Below is a sample of the cleaned C/C++ source code mapped to its specific CWE label from the Juliet Test Suite.</p>
+<pre><code>#include "std_testcase.h" #ifndef _WIN32 #include &lt;wchar.h&gt; #endif #ifdef _WIN32 #include &lt;winsock2.h&gt; #include &lt;windows.h&gt; #include &lt;direct.h&gt; #pragma comment(lib, "ws2_32") #define CLOSE_SOCKET closesocket #else #include &lt;sys/types.h&gt; #include &lt;sys/socket.h&gt; #include &lt;netinet/in.h&gt; #include &lt;arpa/inet.h&gt; #include &lt;unistd.h&gt; #define INVALID_SOCKET -1 #define SOCKET_ERROR -1 #define CLOSE_SOCKET closesocket
+void CWE114_Process_Control__w32_char_connect_socket_11_bad() { ... }
+
+// Label: CWE-114 (Process Control)
+</code></pre>
+
+    <h2>4. Additional Results</h2>
+    <div class="container">
+        <div class="metric-box">
+            <div class="metric-value">0.9880</div>
+            <div class="metric-label">Macro F1</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-value">0.9984</div>
+            <div class="metric-label">Weighted F1</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-value">0.9984</div>
+            <div class="metric-label">Overall Accuracy</div>
+        </div>
+    </div>
+    <p><em>Note: Weighted Cross-Entropy Loss successfully resolved critical confusions, reducing the error rate between CWE-188 and CWE-190 from 1.35% to 0.00%.</em></p>
+
+    <h2>5. List of Example CWE Classes</h2>
+    <p>A subset of the 118 classified vulnerability types:</p>
+    <ul>
+        <li><strong>CWE-114:</strong> Process Control</li>
+        <li><strong>CWE-121:</strong> Stack-based Buffer Overflow</li>
+        <li><strong>CWE-122:</strong> Heap-based Buffer Overflow</li>
+        <li><strong>CWE-188:</strong> Reliance on Data/Memory Layout</li>
+        <li><strong>CWE-190:</strong> Integer Overflow or Wraparound</li>
+        <li><strong>CWE-244:</strong> Improper Clearing of Heap Memory Before Release</li>
+    </ul>
+
+</body>
+</html>

@@ -3,6 +3,12 @@ data/
 models/
 juliet*.csv
 
+# Large local data files
+notebooks/sard116_evaluation.csv
+notebooks/sard116_preprocessed.csv
+notebooks/sard_116.zip
+notebooks/sard_116/
+
 # MacOS
 .DS_Store
 

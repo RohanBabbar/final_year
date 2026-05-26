@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extreme Class Imbalance in Juliet Dataset</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 800px;
+            height: 500px;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chart-container">
+    <h2 class="title">Extreme Class Imbalance (Juliet Dataset)</h2>
+    <p class="subtitle">Top 3 Most Frequent vs. Bottom 3 Rarest Vulnerabilities</p>
+    <canvas id="imbalanceChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('imbalanceChart').getContext('2d');
+
+    const data = {
+        labels: [
+            'CWE-122 (Heap Buffer Overflow)', 
+            'CWE-121 (Stack Buffer Overflow)', 
+            'CWE-78 (OS Command Injection)', 
+            'CWE-500 (Public Static Field Not Final)', 
+            'CWE-674 (Uncontrolled Recursion)', 
+            'CWE-440 (Expected Behavior Violation)'
+        ],
+        datasets: [{
+            label: 'Number of Training Samples',
+            data: [12700, 12158, 11884, 10, 8, 6],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.8)', // Blue (Frequent)
+                'rgba(54, 162, 235, 0.8)', // Blue (Frequent)
+                'rgba(54, 162, 235, 0.8)', // Blue (Frequent)
+                'rgba(255, 99, 132, 0.8)', // Red (Rare)
+                'rgba(255, 99, 132, 0.8)', // Red (Rare)
+                'rgba(255, 99, 132, 0.8)'  // Red (Rare)
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y', // Horizontal bar chart for better label reading
+            plugins: {
+                legend: {
+                    display: false // Hide legend since colors explain it
+                },
+                tooltip: {
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 14 },
+                    padding: 12,
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.raw.toLocaleString()} samples`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'logarithmic', // Use logarithmic scale to make small bars visible next to massive ones
+                    title: {
+                        display: true,
+                        text: 'Sample Count (Logarithmic Scale)',
+                        font: { size: 14, weight: 'bold' }
+                    },
+                    grid: { color: '#e9ecef' },
+                    ticks: {
+                        callback: function(value, index, values) {
+                            if (value === 1 || value === 10 || value === 100 || value === 1000 || value === 10000) {
+                                return value.toLocaleString();
+                            }
+                            return null;
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: { size: 13, family: 'Inter' }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+</script>
+
+</body>
+</html>

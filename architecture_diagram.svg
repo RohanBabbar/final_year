@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+  width="1200" height="1800" viewBox="0 0 1200 1800"
+  role="img">
+  <title>CWE Multiclass Classification — Design Architecture</title>
+  <desc>Six-stage pipeline: data preparation, CodeT5 fine-tuning,
+  confusion analysis, code pattern analysis, baseline comparison,
+  and class-weighted retraining with SARD 116 validation.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M2 1L9 5L2 9" fill="none" stroke="#AAAAAA"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="1800" fill="#FFFFFF"/>
+<text x="600" y="36" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#2C2C2C" text-anchor="middle">CWE Multiclass Classification — Design Architecture</text>
+<text x="600" y="62" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="normal" fill="#7A7A7A" text-anchor="middle">CodeT5-small fine-tuned on Juliet Test Suite v1.3  ·  6-stage analysis pipeline</text>
+<rect x="40" y="85" width="1120" height="220" rx="12" fill="#F0FAF6" stroke="#7EC8B0" stroke-width="2.0"/>
+<text x="62" y="123" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#2A7A65" text-anchor="start">Stage 1  —  Data Preparation</text>
+<text x="62" y="147" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#2A7A65" text-anchor="start">Juliet Test Suite v1.3  ·  179,839 samples  ·  118 CWE classes  ·  C / C++</text>
+<rect x="62" y="165" width="245" height="90" rx="8" fill="#F0FAF6" stroke="#7EC8B0" stroke-width="1.0"/>
+<text x="184" y="204" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2A7A65" text-anchor="middle">Raw .c/.cpp files</text>
+<text x="184" y="224" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2A7A65" text-anchor="middle">bad() + good() variants</text>
+<line x1="307" y1="210" x2="328" y2="210" stroke="#7EC8B0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="328" y="165" width="245" height="90" rx="8" fill="#F0FAF6" stroke="#7EC8B0" stroke-width="1.0"/>
+<text x="450" y="204" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2A7A65" text-anchor="middle">Preprocessing</text>
+<text x="450" y="224" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2A7A65" text-anchor="middle">whitespace → code_clean</text>
+<line x1="573" y1="210" x2="594" y2="210" stroke="#7EC8B0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="594" y="165" width="245" height="90" rx="8" fill="#F0FAF6" stroke="#7EC8B0" stroke-width="1.0"/>
+<text x="716" y="204" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2A7A65" text-anchor="middle">Label assignment</text>
+<text x="716" y="224" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2A7A65" text-anchor="middle">cwe_index 0–117</text>
+<line x1="839" y1="210" x2="860" y2="210" stroke="#7EC8B0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="860" y="165" width="245" height="90" rx="8" fill="#F0FAF6" stroke="#7EC8B0" stroke-width="1.0"/>
+<text x="982" y="204" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2A7A65" text-anchor="middle">80/20 split</text>
+<text x="982" y="224" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2A7A65" text-anchor="middle">+ template split</text>
+<line x1="600" y1="305" x2="600" y2="328" stroke="#AAAAAA" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="40" y="330" width="1120" height="215" rx="12" fill="#F5F4FE" stroke="#A9A5E0" stroke-width="2.0"/>
+<text x="62" y="368" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#5A549C" text-anchor="start">Stage 2  —  CodeT5-small Fine-Tuning</text>
+<text x="62" y="392" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#5A549C" text-anchor="start">60M params  ·  2 epochs  ·  batch 4  ·  LR 5e-5  ·  AdamW  ·  MPS  ·  ~5.5 hours</text>
+<rect x="62" y="412" width="245" height="100" rx="8" fill="#F5F4FE" stroke="#A9A5E0" stroke-width="1.0"/>
+<text x="184" y="456" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#5A549C" text-anchor="middle">SentencePiece tokeniser</text>
+<text x="184" y="476" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#5A549C" text-anchor="middle">max_len 256 tokens</text>
+<line x1="307" y1="462" x2="328" y2="462" stroke="#A9A5E0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="328" y="412" width="245" height="100" rx="8" fill="#F5F4FE" stroke="#A9A5E0" stroke-width="1.0"/>
+<text x="450" y="456" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#5A549C" text-anchor="middle">T5 encoder (6 layers)</text>
+<text x="450" y="476" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#5A549C" text-anchor="middle">512 dim · 8 heads · MIP</text>
+<line x1="573" y1="462" x2="594" y2="462" stroke="#A9A5E0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="594" y="412" width="245" height="100" rx="8" fill="#F5F4FE" stroke="#A9A5E0" stroke-width="1.0"/>
+<text x="716" y="456" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#5A549C" text-anchor="middle">CLS → classification head</text>
+<text x="716" y="476" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#5A549C" text-anchor="middle">2-layer linear · 118 logits</text>
+<line x1="839" y1="462" x2="860" y2="462" stroke="#A9A5E0" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="860" y="412" width="245" height="100" rx="8" fill="#F5F4FE" stroke="#A9A5E0" stroke-width="1.0"/>
+<text x="982" y="456" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#5A549C" text-anchor="middle">Result</text>
+<text x="982" y="476" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#5A549C" text-anchor="middle">Macro F1 0.9985 · Acc 99.84%</text>
+<line x1="600" y1="545" x2="600" y2="568" stroke="#AAAAAA" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="40" y="570" width="1120" height="195" rx="12" fill="#FFFAF0" stroke="#E8C97A" stroke-width="2.0"/>
+<text x="62" y="608" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#8C6212" text-anchor="start">Stage 3  —  Confusion Matrix Analysis</text>
+<text x="62" y="632" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#8C6212" text-anchor="start">35,730 test samples  ·  56 classes  ·  56 misclassified (0.16%)  ·  16 confused pairs identified</text>
+<rect x="62" y="648" width="328" height="85" rx="8" fill="#FFFAF0" stroke="#E8C97A" stroke-width="1.0"/>
+<text x="226" y="684" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C6212" text-anchor="middle">Off-diagonal extraction</text>
+<text x="226" y="704" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C6212" text-anchor="middle">filter non-zero confusion matrix entries</text>
+<line x1="390" y1="690" x2="422" y2="690" stroke="#E8C97A" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="422" y="648" width="328" height="85" rx="8" fill="#FFFAF0" stroke="#E8C97A" stroke-width="1.0"/>
+<text x="586" y="684" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C6212" text-anchor="middle">Error rate per pair</text>
+<text x="586" y="704" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C6212" text-anchor="middle">count / total samples per true class</text>
+<line x1="750" y1="690" x2="782" y2="690" stroke="#E8C97A" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="782" y="648" width="328" height="85" rx="8" fill="#FFFAF0" stroke="#E8C97A" stroke-width="1.0"/>
+<text x="946" y="684" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C6212" text-anchor="middle">16 pairs · imbalance confirmed</text>
+<text x="946" y="704" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C6212" text-anchor="middle">CWE-190 in 7/16  ·  CWE-15 in 6/16</text>
+<line x1="600" y1="765" x2="600" y2="788" stroke="#AAAAAA" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="40" y="790" width="1120" height="225" rx="12" fill="#FFF5F2" stroke="#F0A896" stroke-width="2.0"/>
+<text x="62" y="828" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#8C3B24" text-anchor="start">Stage 4  —  Code Pattern Analysis  (Δ method)</text>
+<text x="62" y="852" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#8C3B24" text-anchor="start">78 regex features  ·  8 groups  ·  13 confused CWEs  ·  chunked 5K rows  ·  peak RAM 1.5 MB</text>
+<rect x="62" y="872" width="245" height="105" rx="8" fill="#FFF5F2" stroke="#F0A896" stroke-width="1.0"/>
+<text x="184" y="918" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C3B24" text-anchor="middle">Feature extraction</text>
+<text x="184" y="938" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C3B24" text-anchor="middle">78 regex patterns · binary presence</text>
+<line x1="307" y1="924" x2="328" y2="924" stroke="#F0A896" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="328" y="872" width="245" height="105" rx="8" fill="#FFF5F2" stroke="#F0A896" stroke-width="1.0"/>
+<text x="450" y="918" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C3B24" text-anchor="middle">Δ computation</text>
+<text x="450" y="938" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C3B24" text-anchor="middle">freq(True) − freq(Predicted)</text>
+<line x1="573" y1="924" x2="594" y2="924" stroke="#F0A896" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="594" y="872" width="245" height="105" rx="8" fill="#FFF5F2" stroke="#F0A896" stroke-width="1.0"/>
+<text x="716" y="918" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C3B24" text-anchor="middle">Discriminability check</text>
+<text x="716" y="938" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C3B24" text-anchor="middle">all pairs |Δ| > 0.60 · max 0.9870</text>
+<line x1="839" y1="924" x2="860" y2="924" stroke="#F0A896" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="860" y="872" width="245" height="105" rx="8" fill="#FFF5F2" stroke="#F0A896" stroke-width="1.0"/>
+<text x="982" y="918" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#8C3B24" text-anchor="middle">Root cause confirmed</text>
+<text x="982" y="938" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#8C3B24" text-anchor="middle">imbalance — not code similarity</text>
+<line x1="600" y1="1015" x2="600" y2="1038" stroke="#AAAAAA" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="40" y="1040" width="1120" height="195" rx="12" fill="#F0F7FD" stroke="#8DC4EC" stroke-width="2.0"/>
+<text x="62" y="1078" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#2260A0" text-anchor="start">Stage 5  —  Baseline Comparison</text>
+<text x="62" y="1102" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#2260A0" text-anchor="start">Same data  ·  same split  ·  same hyperparameters  ·  only architecture differs</text>
+<rect x="62" y="1118" width="340" height="95" rx="8" fill="#F0F7FD" stroke="#8DC4EC" stroke-width="1.0"/>
+<text x="232" y="1159" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2260A0" text-anchor="middle">CodeBERT 125M</text>
+<text x="232" y="1179" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2260A0" text-anchor="middle">2 epochs · 7.5 hrs · Macro F1 0.9983</text>
+<rect x="439" y="1118" width="340" height="95" rx="8" fill="#F0F7FD" stroke="#8DC4EC" stroke-width="1.0"/>
+<text x="609" y="1159" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#2260A0" text-anchor="middle">RoBERTa 125M</text>
+<text x="609" y="1179" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#2260A0" text-anchor="middle">1 epoch* · Macro F1 0.9965 · no code pretrain</text>
+<rect x="796" y="1118" width="340" height="95" rx="8" fill="#F3FAE8" stroke="#9FCC72" stroke-width="1.0"/>
+<text x="966" y="1159" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#3A6818" text-anchor="middle">CodeT5 wins at 52% fewer params</text>
+<text x="966" y="1179" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#3A6818" text-anchor="middle">Macro F1 0.9985 · 2.08× param efficiency</text>
+<line x1="600" y1="1235" x2="600" y2="1268" stroke="#AAAAAA" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="40" y="1270" width="1120" height="255" rx="12" fill="#F3FAE8" stroke="#9FCC72" stroke-width="2.0"/>
+<text x="62" y="1308" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#3A6818" text-anchor="start">Stage 6  —  Class-Weighted Retraining + Validation</text>
+<text x="62" y="1332" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="normal" fill="#3A6818" text-anchor="start">w_c = total / (num_classes × n_c)  ·  cap at 20×  ·  CrossEntropyLoss(weight=class_weights)</text>
+<rect x="62" y="1352" width="340" height="100" rx="8" fill="#F3FAE8" stroke="#9FCC72" stroke-width="1.0"/>
+<text x="232" y="1396" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#3A6818" text-anchor="middle">Uncapped weights</text>
+<text x="232" y="1416" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#3A6818" text-anchor="middle">CWE-188/176/244 → F1 1.0  ·  685/688 → F1 0.0  ·  Macro F1 0.9727</text>
+<line x1="402" y1="1402" x2="439" y2="1402" stroke="#9FCC72" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="439" y="1352" width="340" height="100" rx="8" fill="#F3FAE8" stroke="#9FCC72" stroke-width="1.0"/>
+<text x="609" y="1396" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#3A6818" text-anchor="middle">Capped at 20×</text>
+<text x="609" y="1416" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#3A6818" text-anchor="middle">685/688 weights 145× → 20×  ·  all minority recovered  ·  Macro F1 ≥ 0.998</text>
+<line x1="779" y1="1402" x2="796" y2="1402" stroke="#9FCC72" stroke-width="1.8" marker-end="url(#arrow)"/>
+<rect x="796" y="1352" width="340" height="100" rx="8" fill="#F3FAE8" stroke="#9FCC72" stroke-width="1.0"/>
+<text x="966" y="1396" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#3A6818" text-anchor="middle">SARD 116 validation</text>
+<text x="966" y="1416" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="normal" fill="#3A6818" text-anchor="middle">100,883 unseen files  ·  Acc 99.86%  ·  100/118 classes F1 = 1.0</text>
+<rect x="62" y="1571" width="24" height="16" rx="4" fill="#7EC8B0" fill-opacity="0.4" stroke="#7EC8B0" stroke-width="1.5"/>
+<text x="94" y="1583" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 1: Data preparation</text>
+<rect x="435" y="1571" width="24" height="16" rx="4" fill="#A9A5E0" fill-opacity="0.4" stroke="#A9A5E0" stroke-width="1.5"/>
+<text x="467" y="1583" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 2: Model fine-tuning</text>
+<rect x="808" y="1571" width="24" height="16" rx="4" fill="#E8C97A" fill-opacity="0.4" stroke="#E8C97A" stroke-width="1.5"/>
+<text x="840" y="1583" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 3: Confusion analysis</text>
+<rect x="62" y="1607" width="24" height="16" rx="4" fill="#F0A896" fill-opacity="0.4" stroke="#F0A896" stroke-width="1.5"/>
+<text x="94" y="1619" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 4: Pattern analysis</text>
+<rect x="435" y="1607" width="24" height="16" rx="4" fill="#8DC4EC" fill-opacity="0.4" stroke="#8DC4EC" stroke-width="1.5"/>
+<text x="467" y="1619" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 5: Baseline comparison</text>
+<rect x="808" y="1607" width="24" height="16" rx="4" fill="#9FCC72" fill-opacity="0.4" stroke="#9FCC72" stroke-width="1.5"/>
+<text x="840" y="1619" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="normal" fill="#7A7A7A" text-anchor="start">Stage 6: Weighted retraining + SARD 116</text>
+</svg>
